@@ -98,5 +98,5 @@ select sq.userid as db_user_id
                    group by sae.query) as alrt on (alrt.query = sq.query)   				   
   where sq.userid <> 1                               -- exclude rdsdb user
     and sq.aborted = 0                               -- exlcude aborted or cancelled query                          
-    and cast(sq.starttime as date) = current_date-1  -- date in UTC
+    and cast(sq.endtime as date) = current_date.     -- date in UTC
 ;
