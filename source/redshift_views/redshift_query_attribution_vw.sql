@@ -50,17 +50,17 @@ create or replace view redshift_query_attribution_vw as
 with redshift_cluster_node as (
 select count(1) as node_count
       -- Check the pricing based on the AWS region in which the Amazon Redshift cluster is located
-      ,3.26 as price_per_node_per_hour                                                  -- Modify this based on the price per hour of the compute node (Check https://aws.amazon.com/redshift/pricing/)
+      ,3.26 as price_per_node_per_hour                                                  -- Modify this based on the price per hour of the compute node (Check https://aws.amazon.com/redshift/pricing/) ra3.4xlarge, $3.26 per Hour
       ,24 as daily_operation_hour                                                       -- Modify this based on the number of hours the Amazon Redshift cluster is available (default is 24 hours if using a Reserved instance)
       ,5.0 as spectrum_price_per_tb                                                     -- Check https://aws.amazon.com/redshift/pricing/#Redshift_Spectrum_pricing
-      ,cast(0.013 as decimal(26,6)) as concurrency_price_per_second                     -- Check https://aws.amazon.com/redshift/pricing/#Concurrency_Scaling_pricing
+      ,cast(0.0009 as decimal(26,6)) as concurrency_price_per_second                    -- Check https://aws.amazon.com/redshift/pricing/#Concurrency_Scaling_pricing $0.0009
       -- Sum of rated score should be equivalent to 1
       -- cpu_rated_score + disk_io_rated_score + execution_rated_score = 1
       ,cast(0.25 as decimal(26,6)) as cpu_rated_score                                   -- Modify this based on the percentage that should be allocated to the cost
       ,cast(0.25 as decimal(26,6)) as disk_io_rated_score                               -- Modify this based on the percentage that should be allocated to the cost
       ,cast(0.5 as decimal(26,6)) as execution_rated_score                              -- Modify this based on the percentage that should be allocated to the cost
       ,cast(count(1) 
-      * 3.26                                                                            -- Modify this based on the price per hour of the compute node (Check https://aws.amazon.com/redshift/pricing/)
+      * 3.26                                                                            -- Modify this based on the price per hour of the compute node (Check https://aws.amazon.com/redshift/pricing/) ra3.4xlarge, $3.26 per Hour
       * 24 as decimal(26,6)) as daily_redshift_compute_cost                             -- Modify this based on the number of hours the Amazon Redshift cluster is available (default is 24 hours if using a Reserved instance)
       ,sum(snsc.used) as cluster_storage_used_mb
       ,sum(snsc.capacity) as cluster_storage_capacity_mb
